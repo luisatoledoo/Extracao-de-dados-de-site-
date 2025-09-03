@@ -12,7 +12,6 @@ import unicodedata
 print('Pasta atual:', os.getcwd())
 
 def limpa_texto(texto):
-    # Remove acentos e deixa minúsculo
     texto = texto.lower()
     texto = ''.join(c for c in unicodedata.normalize('NFD', texto)
                     if unicodedata.category(c) != 'Mn')
@@ -26,7 +25,6 @@ driver.get('https://www.kabum.com.br/')
 
 wait = WebDriverWait(driver, 15)
 
-# Busca com clique, limpeza e digitação letra a letra
 busca = wait.until(EC.element_to_be_clickable((By.NAME, 'query')))
 busca.click()
 busca.clear()
@@ -39,15 +37,12 @@ for letra in termo:
 time.sleep(0.5)
 busca.send_keys(Keys.ENTER)
 
-# Espera a URL mudar para a página de resultados (garante que a busca foi realizada)
 wait.until(EC.url_contains('busca'))
 
-# Espera que pelo menos 1 produto com "placa" no nome apareça, pra garantir página correta
 wait.until(EC.presence_of_element_located((By.XPATH, "//*[contains(translate(text(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'placa')]")))
 
-time.sleep(3)  # Pequena espera extra para garantir carregamento
+time.sleep(3)  
 
-# Scroll para carregar mais produtos
 total_scrolls = 5
 for _ in range(total_scrolls):
     driver.execute_script("window.scrollBy(0, 1000)")
@@ -81,4 +76,5 @@ arquivo = 'produtos_kabum.xlsx'
 wb.save(arquivo)
 
 print(f'Extração concluída e planilha salva em: {os.path.abspath(arquivo)}')
+
 driver.quit()
